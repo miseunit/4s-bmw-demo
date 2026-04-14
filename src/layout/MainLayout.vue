@@ -4,7 +4,6 @@
     <el-aside :width="isCollapse ? '64px' : '220px'" class="layout-aside">
       <div class="logo-area">
         <img src="https://www.bmw.com.cn/etc.clientlibs/ds2-webcomponents/clientlibs/clientlib/resources/img/BMW_White_Logo.svg" alt="BMW" class="logo-img" v-if="!isCollapse" />
-        <!-- <img src="https://youjia.cdn.bcebos.com/youjia_logo/2020-4/1587871592416/ec5175890e6d.png" alt="BMW" class="logo-img" v-if="!isCollapse" /> -->
         <span v-if="!isCollapse" class="logo-text">BMW 车辆管理系统</span>
         <span v-else class="logo-text-mini">B</span>
       </div>
@@ -24,96 +23,108 @@
         </el-menu-item>
 
         <!-- 库存管理 -->
-        <el-sub-menu index="inventory-group">
+        <el-sub-menu v-if="hasAnyPermission(['/inventory', '/car-model', '/purchase', '/sale', '/price-adjust'])" index="inventory-group">
           <template #title>
             <el-icon><Van /></el-icon>
             <span>库存管理</span>
           </template>
-          <el-menu-item index="/inventory">
+          <el-menu-item v-if="hasPermission('/inventory')" index="/inventory">
             <el-icon><List /></el-icon>
             <template #title>车辆库存台账</template>
           </el-menu-item>
-          <el-menu-item index="/car-model">
+          <el-menu-item v-if="hasPermission('/car-model')" index="/car-model">
             <el-icon><Goods /></el-icon>
             <template #title>车型库管理</template>
           </el-menu-item>
-          <el-menu-item index="/purchase">
+          <el-menu-item v-if="hasPermission('/purchase')" index="/purchase">
             <el-icon><ShoppingCart /></el-icon>
             <template #title>买入入库</template>
           </el-menu-item>
-          <el-menu-item index="/sale">
+          <el-menu-item v-if="hasPermission('/sale')" index="/sale">
             <el-icon><Sell /></el-icon>
             <template #title>卖出出库</template>
           </el-menu-item>
-          <el-menu-item index="/price-adjust">
+          <el-menu-item v-if="hasPermission('/price-adjust')" index="/price-adjust">
             <el-icon><PriceTag /></el-icon>
             <template #title>调价管理</template>
           </el-menu-item>
         </el-sub-menu>
 
         <!-- 客户管理 -->
-        <el-sub-menu index="customer-group">
+        <el-sub-menu v-if="hasAnyPermission(['/customer', '/test-drive'])" index="customer-group">
           <template #title>
             <el-icon><User /></el-icon>
             <span>客户管理</span>
           </template>
-          <el-menu-item index="/customer">
+          <el-menu-item v-if="hasPermission('/customer')" index="/customer">
             <el-icon><Avatar /></el-icon>
             <template #title>客户管理</template>
           </el-menu-item>
-          <el-menu-item index="/test-drive">
+          <el-menu-item v-if="hasPermission('/test-drive')" index="/test-drive">
             <el-icon><Key /></el-icon>
             <template #title>试驾管理</template>
           </el-menu-item>
         </el-sub-menu>
 
         <!-- 财务管理 -->
-        <el-sub-menu index="finance-group">
+        <el-sub-menu v-if="hasAnyPermission(['/payment', '/profit'])" index="finance-group">
           <template #title>
             <el-icon><Money /></el-icon>
             <span>财务管理</span>
           </template>
-          <el-menu-item index="/payment">
+          <el-menu-item v-if="hasPermission('/payment')" index="/payment">
             <el-icon><Wallet /></el-icon>
             <template #title>收款管理</template>
           </el-menu-item>
-          <el-menu-item index="/profit">
+          <el-menu-item v-if="hasPermission('/profit')" index="/profit">
             <el-icon><TrendCharts /></el-icon>
             <template #title>利润统计</template>
           </el-menu-item>
         </el-sub-menu>
 
         <!-- 运营管理 -->
-        <el-sub-menu index="operation-group">
+        <el-sub-menu v-if="hasAnyPermission(['/document', '/repair', '/operation-log'])" index="operation-group">
           <template #title>
             <el-icon><SetUp /></el-icon>
             <span>运营管理</span>
           </template>
-          <el-menu-item index="/document">
+          <el-menu-item v-if="hasPermission('/document')" index="/document">
             <el-icon><Files /></el-icon>
             <template #title>证照管理</template>
           </el-menu-item>
-          <el-menu-item index="/repair">
+          <el-menu-item v-if="hasPermission('/repair')" index="/repair">
             <el-icon><Tools /></el-icon>
             <template #title>维修管理</template>
           </el-menu-item>
-          <el-menu-item index="/operation-log">
+          <el-menu-item v-if="hasPermission('/operation-log')" index="/operation-log">
             <el-icon><Document /></el-icon>
             <template #title>操作日志</template>
           </el-menu-item>
         </el-sub-menu>
 
+        <!-- 人力资源 -->
+        <el-sub-menu v-if="hasPermission('/employee')" index="hr-group">
+          <template #title>
+            <el-icon><UserFilled /></el-icon>
+            <span>人力资源</span>
+          </template>
+          <el-menu-item index="/employee">
+            <el-icon><Avatar /></el-icon>
+            <template #title>员工管理</template>
+          </el-menu-item>
+        </el-sub-menu>
+
         <!-- 系统设置 -->
-        <el-sub-menu index="settings-group">
+        <el-sub-menu v-if="hasAnyPermission(['/base-data', '/user-manage'])" index="settings-group">
           <template #title>
             <el-icon><Setting /></el-icon>
             <span>系统设置</span>
           </template>
-          <el-menu-item index="/base-data">
+          <el-menu-item v-if="hasPermission('/base-data')" index="/base-data">
             <el-icon><Collection /></el-icon>
             <template #title>基础信息管理</template>
           </el-menu-item>
-          <el-sub-menu index="base-data-sub">
+          <el-sub-menu v-if="hasPermission('/base-data')" index="base-data-sub">
             <template #title>
               <span>基础信息管理</span>
             </template>
@@ -133,6 +144,10 @@
               <template #title>配件库存管理</template>
             </el-menu-item>
           </el-sub-menu>
+          <el-menu-item v-if="hasPermission('/user-manage')" index="/user-manage">
+            <el-icon><User /></el-icon>
+            <template #title>用户管理</template>
+          </el-menu-item>
         </el-sub-menu>
       </el-menu>
     </el-aside>
@@ -155,8 +170,8 @@
           <NotificationBell />
           <el-dropdown>
             <span class="user-info">
-              <el-avatar :size="32" style="background-color: #0066B1;">{{ userStore.userInfo.name?.charAt(0) || 'U' }}</el-avatar>
-              <span class="user-name">{{ userStore.userInfo.name }}（{{ userStore.userInfo.role }}）</span>
+              <el-avatar :size="32" style="background-color: #0066B1;">{{ userStore.currentUser?.name?.charAt(0) || 'U' }}</el-avatar>
+              <span class="user-name">{{ userStore.currentUser?.name }}（{{ userStore.currentUser?.role }}）</span>
               <el-icon><ArrowDown /></el-icon>
             </span>
             <template #dropdown>
@@ -191,6 +206,12 @@ const isCollapse = ref(false)
 const activeMenu = computed(() => route.path)
 const currentTime = ref('')
 let timer = null
+
+/** 判断当前用户是否有权访问指定路由 */
+const hasPermission = (path) => userStore.hasPermission(path)
+
+/** 判断一组路由中是否有任一可访问 */
+const hasAnyPermission = (paths) => paths.some(p => userStore.hasPermission(p))
 
 const updateTime = () => {
   const now = new Date()

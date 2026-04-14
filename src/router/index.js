@@ -33,6 +33,8 @@ const routes = [
             { path: 'base-data/part-brand', name: 'PartBrand', component: () => import('../views/baseData/PartBrand.vue'), meta: { title: '配件品牌管理' } },
             { path: 'base-data/part-inventory', name: 'PartInventory', component: () => import('../views/baseData/PartInventory.vue'), meta: { title: '配件库存管理' } },
             { path: 'repair', name: 'Repair', component: () => import('../views/Repair.vue'), meta: { title: '维修管理' } },
+            { path: 'employee', name: 'Employee', component: () => import('../views/Employee.vue'), meta: { title: '员工管理' } },
+            { path: 'user-manage', name: 'UserManage', component: () => import('../views/UserManage.vue'), meta: { title: '用户管理' } },
         ],
     },
 ];
@@ -42,11 +44,24 @@ const router = createRouter({
     routes,
 });
 
-// 全局导航守卫：未登录跳转到登录页
-router.beforeEach((to) => {
+// 全局导航守卫
+router.beforeEach(async (to) => {
     const userStore = useUserStore();
+
+    // 确保用户数据库已初始化
+    await userStore.init();
+
+    // 未登录跳转登录页
     if (!to.meta.public && !userStore.isLoggedIn) {
         return { name: 'Login', query: { redirect: to.fullPath } };
+    }
+
+    // 已登录状态检查角色权限
+    if (userStore.isLoggedIn && !to.meta.public) {
+        if (!userStore.hasPermission(to.path)) {
+            // 无权限跳转到首页
+            return { path: '/dashboard' };
+        }
     }
 });
 

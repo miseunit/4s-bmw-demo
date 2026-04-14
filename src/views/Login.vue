@@ -26,8 +26,21 @@
                     </el-button>
                 </el-form-item>
             </el-form>
-            <div class="login-footer">
-                <span>演示账号：任意用户名 / 密码均可登录</span>
+
+            <!-- 快速登录 -->
+            <div class="quick-login">
+                <div class="quick-login-title">快速登录（演示账号）</div>
+                <div class="quick-login-buttons">
+                    <el-button
+                        v-for="account in demoAccounts"
+                        :key="account.username"
+                        :type="account.type"
+                        size="small"
+                        @click="quickLogin(account)"
+                    >
+                        {{ account.label }}
+                    </el-button>
+                </div>
             </div>
         </div>
     </div>
@@ -52,9 +65,25 @@ const form = reactive({
     password: '',
 });
 
+// 预置演示账号
+const demoAccounts = [
+    { username: 'admin', password: '123456', label: '管理员', type: 'danger' },
+    { username: 'sale01', password: '123456', label: '销售-张伟', type: 'primary' },
+    { username: 'sale02', password: '123456', label: '销售-李娜', type: 'primary' },
+    { username: 'finance01', password: '123456', label: '财务-孙丽', type: 'warning' },
+    { username: 'service01', password: '123456', label: '售后-陈刚', type: 'success' },
+];
+
 const rules = {
     username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
     password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
+};
+
+/** 快速登录 */
+const quickLogin = async (account) => {
+    form.username = account.username;
+    form.password = account.password;
+    await handleLogin();
 };
 
 /** 处理登录 */
@@ -63,13 +92,23 @@ const handleLogin = async () => {
     if (!valid) return;
 
     loading.value = true;
-    // 模拟网络延迟
-    setTimeout(() => {
-        userStore.login(form);
-        ElMessage.success('登录成功');
-        router.push('/dashboard');
+    try {
+        const result = await userStore.login({
+            username: form.username.trim(),
+            password: form.password.trim(),
+        });
+        if (result === true) {
+            ElMessage.success('登录成功');
+            const redirect = router.currentRoute.value.query.redirect || '/dashboard';
+            router.push(redirect);
+        } else if (result === 'disabled') {
+            ElMessage.error('该账号已被禁用，请联系管理员');
+        } else {
+            ElMessage.error('用户名或密码错误');
+        }
+    } finally {
         loading.value = false;
-    }, 600);
+    }
 };
 </script>
 
@@ -158,9 +197,25 @@ const handleLogin = async () => {
     background-color: #003380;
     border-color: #003380;
 }
-.login-footer {
-    text-align: center;
+
+/* 快速登录 */
+.quick-login {
+    border-top: 1px solid #eee;
+    padding-top: 16px;
+}
+.quick-login-title {
     font-size: 12px;
-    color: #bbb;
+    color: #999;
+    margin-bottom: 12px;
+    text-align: center;
+}
+.quick-login-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.quick-login-buttons .el-button {
+    flex: 1;
+    min-width: calc(50% - 4px);
 }
 </style>
