@@ -877,8 +877,20 @@ async function nextStep() {
 }
 
 // ===== 提交 =====
-function submit() {
+async function submit() {
     const f = newForm.value
+    // 验证当前步骤的表单
+    try {
+        if (newStep.value === 0) {
+            await step0FormRef.value?.validate()
+        } else if (newStep.value === 1) {
+            await step1FormRef.value?.validate()
+        }
+    } catch (e) {
+        ElMessage.warning('请完成必填项')
+        return
+    }
+
     if (editingNewId.value) {
         // 编辑模式：更新采购记录
         const idx = store.purchaseRecords.findIndex(r => r.id === editingNewId.value)

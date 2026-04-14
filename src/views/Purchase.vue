@@ -749,10 +749,14 @@ function openNewPurchase() {
 function editNewRecord(row) {
     // 从车辆信息中获取完整数据
     const vehicle = store.vehicles.find(v => v.vin === row.vin)
+    // 根据车系名称查找车系ID
+    const series = store.carSeries.find(s => s.name === row.seriesName)
+    // 根据供应商名称查找供应商ID
+    const supplier = suppliers.find(s => s.name === row.supplier)
     const formData = {
-        seriesName: row.seriesName, seriesId: null, modelId: vehicle?.modelId || null,
+        seriesName: row.seriesName, seriesId: series?.id || null, modelId: vehicle?.modelId || null,
         modelName: row.modelName, guidePrice: vehicle?.guidePrice || null, config: vehicle?.config || '',
-        supplier: row.supplier, supplierId: null, vin: row.vin,
+        supplier: row.supplier, supplierId: supplier?.id || null, vin: row.vin,
         plateNumber: vehicle?.plateNumber || '', color: vehicle?.color || '', interiorColor: vehicle?.interiorColor || '',
         purchasePrice: row.purchasePrice, quantity: row.quantity, purchaseDate: row.purchaseDate,
         location: vehicle?.location || '', remark: vehicle?.remark || '',
