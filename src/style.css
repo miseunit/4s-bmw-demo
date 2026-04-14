@@ -1,0 +1,45 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+html, body, #app {
+  height: 100%;
+  font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', Arial, sans-serif;
+}
+.page-container {
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+}
+.page-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1d2129;
+  margin-bottom: 20px;
+}
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+  align-items: flex-end;
+}
+.filter-bar .el-form-item {
+  margin-bottom: 0;
+}
+.dialog-form .el-form-item {
+  margin-bottom: 18px;
+}
+.price-up { color: #f56c6c; }
+.price-down { color: #67c23a; }
+.status-tag-in_stock { background: #e8f7e8; color: #389e0d; border-color: #b7eb8f; }
+.status-tag-sold { background: #f0f0f0; color: #999; border-color: #d9d9d9; }
+.status-tag-reserved { background: #fff7e6; color: #d48806; border-color: #ffe58f; }
+.status-tag-pending { background: #fff7e6; color: #d48806; border-color: #ffe58f; }
+.status-tag-approved { background: #e8f7e8; color: #389e0d; border-color: #b7eb8f; }
+.status-tag-rejected { background: #fff1f0; color: #cf1322; border-color: #ffa39e; }
+.mb-16 { margin-bottom: 16px; }
+.mt-16 { margin-top: 16px; }
+.text-right { text-align: right; }
+.money { font-family: 'DIN Alternate', 'Helvetica Neue', monospace; }
